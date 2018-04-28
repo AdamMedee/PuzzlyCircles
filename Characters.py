@@ -3,6 +3,7 @@ from math import *
 from random import *
 from pickle import *
 
+
 class Player:
     def __init__(self, xPos, yPos):
         self.xPos = xPos
@@ -20,7 +21,7 @@ class Player:
         self.rect = Rect(self.xPos, self.yPos, self.width, self.height)
         self.spriteSheet = image.load("resources/images/charSprites.png")
         # 0 is stand, 1 is run1, 2 is run2, 3 is fall
-        self.imageList = [self.spriteSheet.subsurface(Rect(i*32, 0, 32, 70)) for i in range(4)]
+        self.imageList = [self.spriteSheet.subsurface(Rect(i * 32, 0, 32, 70)) for i in range(4)]
         self.imageListR = [transform.flip(self.imageList[i], True, False) for i in range(4)]
 
     def control(self, keyPresses):
@@ -37,8 +38,8 @@ class Player:
                     self.frame = 0
 
     def updateRect(self):
-        self.rect.x = int(round(self.xPos)+0.1)
-        self.rect.y = int(round(self.yPos)+0.1)
+        self.rect.x = int(round(self.xPos) + 0.1)
+        self.rect.y = int(round(self.yPos) + 0.1)
 
     def updatePos(self):
         self.xPos = self.rect.x
@@ -59,6 +60,7 @@ class Player:
             self.yVel += self.gravity
         else:
             self.yVel = 0
+
         self.onGround = False
         self.yPos += self.yVel
         self.updateRect()
@@ -79,6 +81,23 @@ class Player:
             if self.rect.colliderect(projectile.rect):
                 if projectile.getType() == "kill":
                     self.dead = True
+                    projectile.dead = True
+                else:
+                    projectile.dead = True
+                    self.xVel *= projectile.getSlowAmount()
+                    self.yVel *= projectile.getSlowAmount()
+
+    def collideEnemy(self, enemyList):
+        for enemy in enemyList:
+            if self.rect.colliderect(enemy.rect):
+                enemy.dead = True
+                self.dead = True
+
+    def collideBounce(self, bounceList):
+        pass
+
+    def collideMagma(self, magmaList):
+        pass
 
     def getDead(self):
         return self.dead
@@ -111,7 +130,7 @@ class Player:
                 screen.blit(self.imageListR[2], self.rect)
             elif self.frame < 100:
                 screen.blit(self.imageListR[0], self.rect)
-        #draw.rect(screen, (255, 100, 100), self.rect)
+        # draw.rect(screen, (255, 100, 100), self.rect)
 
 
 class Enemy:
@@ -130,12 +149,13 @@ class Enemy:
         self.rate = rate
         self.bulletType = bulletType
         self.angle = angle
+        self.dead = False
 
     def move(self):
-        self.X += self.vel*cos(self.angle)
-        self.Y += self.vel*sin(self.angle)
+        self.X += self.vel * cos(self.angle)
+        self.Y += self.vel * sin(self.angle)
         if self.X == self.endX:
             self.vel *= -1
 
     def update(self, screen):
-        screen.blit(self.imageList[(self.frame%150)//50], (self.X, self.Y))
+        screen.blit(self.imageList[(self.frame % 150) // 50], (self.X, self.Y))

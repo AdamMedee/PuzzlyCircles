@@ -45,6 +45,7 @@ class Projectile:
         self.radius = radius
         self.type = type
         self.slowAmount = slowAmount
+        self.dead = False
         self.rect = Rect(self.xPos - radius, self.yPos - radius, radius*2, radius*2)
 
     def move(self):
