@@ -1,7 +1,7 @@
 from pygame import *
 from math import *
 from random import *
-<<<<<<< HEAD
+
 
 init()
 buttonFont = font.Font("Quantify Bold v2.6.ttf", 60)
@@ -58,7 +58,3 @@ class inGameUI:
         gameScreen.blit(timelefttext, (gameScreen.get_size()[0] - (scoreword.get_width() + 10), 40))
 
         return gameScreen
-=======
-from pickle import *
-
->>>>>>> origin/master

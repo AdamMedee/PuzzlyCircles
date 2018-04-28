@@ -49,7 +49,6 @@ while True:
             if mainMenuUI.getStartDimensions(mainMenuUI, WIDTH, HEIGHT).collidepoint(mx, my) and leftClick:
                 menu = "inGame"
 
-            print(menu)
         elif menu == "inGame":
             inGameUI(screen)
             bliton = inGameUI.show(inGameUI, 20, 345)
