@@ -44,18 +44,20 @@ while True:
 
         if menu == "main":
             mainMenuScreen = mainMenuUI(screen, WIDTH, HEIGHT, mx, my)
-            bliton = mainMenuUI.show(mainMenuScreen)
-            screen.blit(bliton, (0,0))
+            mainMenuUI.show(mainMenuScreen)
+
             if mainMenuUI.getStartDimensions(mainMenuScreen).collidepoint(mx, my) and leftClick:
                 menu = "inGame"
             elif mainMenuUI.getLevelSelectDimensions(mainMenuScreen).collidepoint(mx, my) and leftClick:
                 menu = "levelSelect"
+
         elif menu == "levelSelect":
-            pass
+            levelSelectScreen = levelSelectUI(screen, WIDTH, HEIGHT, mx, my, ["aaaaaa","aaaaaa","aaaaaa","aaaaaa","aaaaaa","aaaaaa","aaaaaa","aaaaaa","aaaaaa","aaaaaa","aaaaaa","aaaaaa"])
+            levelSelectScreen.show();
+
         elif menu == "inGame":
-            inGameScreen = inGameUI(screen)
-            bliton = inGameUI.show(inGameScreen, 20, 345)
-            screen.blit(bliton, (0, 0))
+            inGameScreen = inGameUI(screen, 20, 345)
+            inGameUI.show(inGameScreen)
 
         display.flip()
         continue
