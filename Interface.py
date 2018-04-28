@@ -93,6 +93,10 @@ class levelSelectUI:
             for j in range(3):
                 level_text = buttonFont.render(self.names[currentname], 0 , (0,0,0))
                 levelSelectScreen.blit(level_text, (80+ 300*i, 220 + 130*j))
+                if Rect(80+ 300*i, 220 + 130*j, level_text.get_width(), level_text.get_height()).collidepoint(self.mx, self.my):
+                    level_text = buttonFont.render(self.names[currentname], 0, (100, 100, 100))
+                    levelSelectScreen.blit(level_text, (80 + 300 * i, 220 + 130 * j))
                 currentname += 1
+
 
         self.screen.blit(levelSelectScreen, (0,0))
