@@ -3,6 +3,7 @@ from math import *
 from random import *
 
 init()
+titleFont = font.Font("resources/text/Quantify Bold v2.6.ttf", 150)
 buttonFont = font.Font("resources/text/Quantify Bold v2.6.ttf", 60)
 inGameFont = font.Font("resources/text/Quantify Bold v2.6.ttf", 30)
 
@@ -18,18 +19,18 @@ class mainMenuUI:
     def show(self):
         mainMenu = Surface((1280, 720))
         mainMenu.fill((255, 255, 255))
-        menuBack = image.load('menuBack.png')
+        menuBack = transform.smoothscale(image.load('resources/images/menuBack.png'), (1280, 720))
         mainMenu.blit(menuBack, (0, 0))
 
-        title = buttonFont.render("Whomst've'ly'yaint'ed'i'es'y'es", 0, (0, 0, 0, 255))
+        title = titleFont.render("PUZZLY CIRCLES", 0, (220, 220, 255, 255))
         mainMenu.blit(title, (self.width // 2 - title.get_width() // 2, 20))
 
-        start_text = buttonFont.render("Start", 0, (0, 0, 0, 255))
+        start_text = buttonFont.render("Start", 0, (220, 220, 255, 255))
         start_rect = Rect(self.width // 2 - start_text.get_width() // 2 - 5, 2 * self.height // 3 - 5,
                           start_text.get_width() + 10, start_text.get_height() + 10)
         mainMenu.blit(start_text, (self.width // 2 - start_text.get_width() // 2, 2 * self.height // 3))
 
-        levelSelect_text = buttonFont.render("Level Select", 0, (0, 0, 0, 255))
+        levelSelect_text = buttonFont.render("Level Select", 0, (220, 220, 255, 255))
         levelSelect_rect = Rect(self.width // 2 - levelSelect_text.get_width() // 2, 2 * self.height // 3 + 70,
                                 levelSelect_text.get_width() + 10, levelSelect_text.get_height() + 10)
         mainMenu.blit(levelSelect_text,
