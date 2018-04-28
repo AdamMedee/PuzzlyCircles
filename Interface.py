@@ -17,6 +17,8 @@ class mainMenuUI:
     def show(self):
         mainMenu = Surface((1280, 720))
         mainMenu.fill((255,255,255))
+        menuBack = image.load('menuBack.png')
+        mainMenu.blit(menuBack,(0,0))
 
         title = buttonFont.render("Whomst've'ly'yaint'ed'i'es'y'es", 0 , (0,0,0,255))
         mainMenu.blit(title, (self.width//2 - title.get_width()//2, 20))
