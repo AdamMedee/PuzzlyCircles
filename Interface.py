@@ -3,8 +3,8 @@ from math import *
 from random import *
 
 init()
-buttonFont = font.Font("Quantify Bold v2.6.ttf", 60)
-inGameFont = font.Font("Quantify Bold v2.6.ttf", 30)
+buttonFont = font.Font("resources/text/Quantify Bold v2.6.ttf", 60)
+inGameFont = font.Font("resources/text/Quantify Bold v2.6.ttf", 30)
 
 
 class mainMenuUI:
