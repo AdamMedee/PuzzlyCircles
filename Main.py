@@ -43,15 +43,18 @@ while True:
         mb = mouse.get_pressed()
 
         if menu == "main":
-            mainMenuUI(screen)
-            bliton = mainMenuUI.show(mainMenuUI, WIDTH, HEIGHT, mx, my, mb)
+            mainMenuScreen = mainMenuUI(screen, WIDTH, HEIGHT, mx, my)
+            bliton = mainMenuUI.show(mainMenuScreen)
             screen.blit(bliton, (0,0))
-            if mainMenuUI.getStartDimensions(mainMenuUI, WIDTH, HEIGHT).collidepoint(mx, my) and leftClick:
+            if mainMenuUI.getStartDimensions(mainMenuScreen).collidepoint(mx, my) and leftClick:
                 menu = "inGame"
-
+            elif mainMenuUI.getLevelSelectDimensions(mainMenuScreen).collidepoint(mx, my) and leftClick:
+                menu = "levelSelect"
+        elif menu == "levelSelect":
+            pass
         elif menu == "inGame":
-            inGameUI(screen)
-            bliton = inGameUI.show(inGameUI, 20, 345)
+            inGameScreen = inGameUI(screen)
+            bliton = inGameUI.show(inGameScreen, 20, 345)
             screen.blit(bliton, (0, 0))
 
         display.flip()
