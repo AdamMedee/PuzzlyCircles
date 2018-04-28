@@ -17,6 +17,8 @@ class mainMenuUI:
     def show(self):
         mainMenu = Surface((1280, 720))
         mainMenu.fill((255,255,255))
+        menuBack = image.load('menuBack.png')
+        mainMenu.blit(menuBack,(0,0))
 
         title = buttonFont.render("Whomst've'ly'yaint'ed'i'es'y'es", 0 , (0,0,0,255))
         mainMenu.blit(title, (self.width//2 - title.get_width()//2, 20))
@@ -86,10 +88,17 @@ class levelSelectUI:
 
         currentname = 0
 
+        levelSelect_text = buttonFont.render("Level Select", 0, (0,0,0,255))
+        levelSelectScreen.blit(levelSelect_text, (self.width//2 - levelSelect_text.get_width()//2, 30))
+
         for i in range(4):
             for j in range(3):
                 level_text = buttonFont.render(self.names[currentname], 0 , (0,0,0))
-                levelSelectScreen.blit(level_text, (80+ 300*i, 200 + 130*j))
+                levelSelectScreen.blit(level_text, (80+ 300*i, 220 + 130*j))
+                if Rect(80+ 300*i, 220 + 130*j, level_text.get_width(), level_text.get_height()).collidepoint(self.mx, self.my):
+                    level_text = buttonFont.render(self.names[currentname], 0, (100, 100, 100))
+                    levelSelectScreen.blit(level_text, (80 + 300 * i, 220 + 130 * j))
                 currentname += 1
+
 
         self.screen.blit(levelSelectScreen, (0,0))

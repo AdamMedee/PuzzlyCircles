@@ -52,7 +52,7 @@ while True:
                 menu = "levelSelect"
 
         elif menu == "levelSelect":
-            levelSelectScreen = levelSelectUI(screen, WIDTH, HEIGHT, mx, my, ["aaaaaa","aaaaaa","aaaaaa","aaaaaa","aaaaaa","aaaaaa","aaaaaa","aaaaaa","aaaaaa","aaaaaa","aaaaaa","aaaaaa"])
+            levelSelectScreen = levelSelectUI(screen, WIDTH, HEIGHT, mx, my, ["jimmbo","paxwax","zigzag","shmoop","jaloop","jojoba","hojpoj","quezal","zincky","jubhah","dancky","smoler"])
             levelSelectScreen.show();
 
         elif menu == "inGame":
