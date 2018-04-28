@@ -16,9 +16,10 @@ class Player:
         self.jumpVel = 17.448
         self.frame = 0
         self.onGround = False
+        self.dead = False
         self.rect = Rect(self.xPos, self.yPos, self.width, self.height)
         self.spriteSheet = image.load("resources/images/charSprites.png")
-        #0 is stand, 1 is run1, 2 is run2, 3 is fall
+        # 0 is stand, 1 is run1, 2 is run2, 3 is fall
         self.imageList = [self.spriteSheet.subsurface(Rect(i*32, 0, 32, 70)) for i in range(4)]
         self.imageListR = [transform.flip(self.imageList[i], True, False) for i in range(4)]
 
@@ -56,6 +57,8 @@ class Player:
 
         if not self.onGround:
             self.yVel += self.gravity
+        else:
+            self.yVel = 0
         self.onGround = False
         self.yPos += self.yVel
         self.updateRect()
@@ -70,6 +73,15 @@ class Player:
                     self.yVel = 0
         self.updatePos()
         self.updateRect()
+
+    def collideProjectile(self, projectileList):
+        for projectile in projectileList:
+            if self.rect.colliderect(projectile.rect):
+                if projectile.getType() == "kill":
+                    self.dead = True
+
+    def getDead(self):
+        return self.dead
 
     def update(self, screen):
         if not self.xVel and self.onGround:
@@ -100,3 +112,30 @@ class Player:
             elif self.frame < 100:
                 screen.blit(self.imageListR[0], self.rect)
         #draw.rect(screen, (255, 100, 100), self.rect)
+
+
+class Enemy:
+    def __init__(self, startX, startY, endX, endY, vel, imageList, shoots, rate, bulletType, angle):
+        self.startX = startX
+        self.startY = startY
+        self.X = startX
+        self.Y = startY
+        self.endX = endX
+        self.endY = endY
+        self.vel = vel
+        self.imageList = imageList
+        self.frame = 0
+        self.angle = atan(endY - startY, endX - startX)
+        self.shoots = shoots
+        self.rate = rate
+        self.bulletType = bulletType
+        self.angle = angle
+
+    def move(self):
+        self.X += self.vel*cos(self.angle)
+        self.Y += self.vel*sin(self.angle)
+        if self.X == self.endX:
+            self.vel *= -1
+
+    def update(self, screen):
+        screen.blit(self.imageList[(self.frame%150)//50], (self.X, self.Y))

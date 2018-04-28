@@ -19,8 +19,10 @@ class Level:
     def __init__(self, number):
         self.number = number
         self.blockList = []
+        self.bounceList = []
         self.enemyList = []
         self.projectileList = []
+        self.score = 0
         self.player = Player(100, 100)
         self.levelCode = levelList[number - 1]
         for row in range(18):
