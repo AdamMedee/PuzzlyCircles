@@ -103,7 +103,7 @@ while True:
             currentLevel.run(keys, [leftClick, rightClick], [mouseX, mouseY], Rect(0, 0, WIDTH, HEIGHT))
             lose = currentLevel.update(screen)
             win = currentLevel.winAnimation(screen)
-            pauseButton = Button(Rect(20, 20, 100, 30), buttonFont.render("PAUSE XD", False, (220, 220, 255)),
+            pauseButton = Button(Rect(20, 20, 100, 30), buttonFont.render("PAUSE", False, (220, 220, 255)),
                                  buttonFont.render("PAUSE", False, (130, 130, 130)), "pause")
             pauseButton.update(screen, (mouseX, mouseY))
             if pauseButton.clicked((mouseX, mouseY), leftClick):
