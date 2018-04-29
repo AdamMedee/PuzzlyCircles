@@ -25,18 +25,20 @@ mixer.music.play(-1)
 
 menu = "main"
 mainBackground = transform.scale(image.load("resources/images/menuBack.png"), (1280, 720))
-mainTitle = transform.scale(titleFont.render("PUZZLY CIRCLES", False, (255, 255, 255)), (800, 150))
-playButton = buttonFont.render("PLAY", False, (255, 255, 255))
+mainTitle = transform.scale(titleFont.render("PUZZLY CIRCLES", False, (220, 220, 255)), (800, 150))
+playButton = buttonFont.render("PLAY", False, (220, 220, 255))
 playButtonP = buttonFont.render("PLAY", False, (130, 130, 130))
 mainButtonList = [
     Button(Rect(550, 350, 180, 80), playButton, playButtonP, "Play")
 ]
 
 levelSelectBackground = transform.scale(image.load("resources/images/levelselectBackground.png"), (1280, 720))
-levelSelectTitle = transform.scale(titleFont.render("LEVEL SELECT", False, (255, 255, 255)), (800, 150))
+levelSelectTitle = transform.scale(titleFont.render("LEVEL SELECT", False, (220, 220, 255)), (800, 150))
 selectButtonList = [
-    Button(Rect(225 + 250*(i%4), 250 + 140*(i//4), 100, 100), buttonFont.render("%-2d" % (i+1), False, (255, 255, 255)), buttonFont.render("%-2d" % (i+1), False, (130, 130, 130)), "%d" % (i+1)) for i in range(12)
+    Button(Rect(225 + 250*(i%4), 250 + 140*(i//4), 100, 100), buttonFont.render("%-2d" % (i+1), False, (220, 220, 255)), buttonFont.render("%-2d" % (i+1), False, (130, 130, 130)), "%d" % (i+1)) for i in range(12)
 ]
+
+winBackground = transform.scale(image.load("resources/images/winBack.png"), (1280, 720))
 
 #Start of the loop
 while True:
@@ -81,15 +83,21 @@ while True:
             currentLevel.run(keys, [leftClick, rightClick], [mouseX, mouseY], Rect(0, 0, WIDTH, HEIGHT))
             lose = currentLevel.update(screen)
             win = currentLevel.winAnimation(screen)
+            pauseButton = Button(Rect(20, 20, 100, 30), buttonFont.render("PAUSE XD", False, (220, 220, 255)),
+                                 buttonFont.render("PAUSE XD", False, (130, 130, 130)), "pause")
+            pauseButton.update(screen, (mouseX, mouseY))
+            if pauseButton.clicked((mouseX, mouseY), leftClick):
+                menu = "pause"
             if lose:
                 menu = "lose"
-                restartButton = Button(Rect(540, 300, 200, 80), buttonFont.render("NEW LEVEL", False, (255, 255, 255)), buttonFont.render("NEW LEVEL", False, (130, 130, 130)), "Restart")
-                playagainButton = Button(Rect(560, 450, 160, 80), buttonFont.render("AGAIN", False, (255, 255, 255)), buttonFont.render("AGAIN", False, (130, 130, 130)), "Restart")
+                restartButton = Button(Rect(540, 300, 200, 80), buttonFont.render("NEW LEVEL", False, (220, 220, 255)), buttonFont.render("NEW LEVEL", False, (130, 130, 130)), "Restart")
+                playagainButton = Button(Rect(560, 450, 160, 80), buttonFont.render("AGAIN", False, (220, 220, 255)), buttonFont.render("AGAIN", False, (130, 130, 130)), "Restart")
             elif win:
                 menu = "win"
-                timeText = transform.scale(buttonFont.render("TIME: %d" % currentLevel.timePassed, False, (255, 255, 255)), (200, 100))
-                restartButton = Button(Rect(540, 400, 200, 80), buttonFont.render("NEW LEVEL", False, (255, 255, 255)), buttonFont.render("NEW LEVEL", False, (130, 130, 130)), "Restart")
-                playagainButton = Button(Rect(560, 550, 160, 80), buttonFont.render("AGAIN", False, (255, 255, 255)), buttonFont.render("AGAIN", False, (130, 130, 130)), "Restart")
+                timeText = transform.scale(buttonFont.render("TIME: %d" % currentLevel.timePassed, False, (220, 220, 255)), (230, 100))
+                restartButton = Button(Rect(840, 400, 230, 80), buttonFont.render("NEW LEVEL", False, (220, 220, 255)), buttonFont.render("NEW LEVEL", False, (130, 130, 130)), "Restart")
+                playagainButton = Button(Rect(860, 550, 190, 80), buttonFont.render("AGAIN", False, (220, 220, 255)), buttonFont.render("AGAIN", False, (130, 130, 130)), "Restart")
+
 
         elif menu == "lose":
             restartButton.update(screen, (mouseX, mouseY))
@@ -101,7 +109,8 @@ while True:
                 currentLevel = Level(currentLevel.number, background)
 
         elif menu == "win":
-            screen.blit(timeText, (540, 260))
+            screen.blit(winBackground, (0, 0))
+            screen.blit(timeText, (840, 260))
             restartButton.update(screen, (mouseX, mouseY))
             playagainButton.update(screen, (mouseX, mouseY))
             if restartButton.clicked((mouseX, mouseY), leftClick):
@@ -111,7 +120,15 @@ while True:
                 currentLevel = Level(currentLevel.number, background)
 
         elif menu == "pause":
-            pass
+            resumeButton = Button(Rect(840, 400, 230, 80), buttonFont.render("RESUME", False, (220, 220, 255)), buttonFont.render("RESUME", False, (130, 130, 130)), "game")
+            quitButton = Button(Rect(860, 550, 190, 80), buttonFont.render("QUIT", False, (220, 220, 255)), buttonFont.render("QUIT", False, (130, 130, 130)), "levelSelect")
+            resumeButton.update(screen, (mouseX, mouseY))
+            quitButton.update(screen, (mouseX, mouseY))
+            if resumeButton.clicked((mouseX, mouseY), leftClick):
+                menu = "game"
+            if quitButton.clicked((mouseX, mouseY), leftClick):
+                menu = "levelSelect"
+
 
 
         display.flip()
