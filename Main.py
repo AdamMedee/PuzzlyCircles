@@ -18,7 +18,10 @@ inGameFont = font.Font("resources/text/Quantify Bold v2.6.ttf", 30)
 WIDTH, HEIGHT = 1280, 720
 screen = display.set_mode((WIDTH, HEIGHT))
 
-backgroundList = [image.load("resources/images/background%d.png" % i).convert() for i in range(1, 2)]
+background = image.load("resources/images/background1.png").convert()
+
+mixer.music.load("resources/music/music1.mp3")
+mixer.music.play(-1)
 
 menu = "main"
 mainBackground = transform.scale(image.load("resources/images/menuBack.png"), (1280, 720))
@@ -38,6 +41,7 @@ selectButtonList = [
 #Start of the loop
 while True:
     leftClick = False
+    rightClick = False
     keys = key.get_pressed()
     for action in event.get():
         if action.type == QUIT:
@@ -47,6 +51,8 @@ while True:
         if action.type == MOUSEBUTTONDOWN:
             if action.button == 1:
                 leftClick = True
+            if action.button == 3:
+                rightClick = True
         else:
             leftClick = False
 
@@ -68,26 +74,44 @@ while True:
             for button in selectButtonList:
                 button.update(screen, (mouseX, mouseY))
                 if button.clicked((mouseX, mouseY), leftClick):
-                    currentLevel = Level(int(button.name.strip(" ")), backgroundList[int(button.name.strip(" "))-1])
+                    currentLevel = Level(int(button.name.strip(" ")), background)
                     menu = "game"
 
         elif menu == "game":
-            currentLevel.run(keys)
+            currentLevel.run(keys, [leftClick, rightClick], [mouseX, mouseY], Rect(0, 0, WIDTH, HEIGHT))
             lose = currentLevel.update(screen)
+            win = currentLevel.winAnimation(screen)
             if lose:
                 menu = "lose"
-                timeText = buttonFont.render("TIME: %d" % currentLevel.timePassed, False, (255, 255, 255))
+                restartButton = Button(Rect(540, 300, 200, 80), buttonFont.render("NEW LEVEL", False, (255, 255, 255)), buttonFont.render("NEW LEVEL", False, (130, 130, 130)), "Restart")
+                playagainButton = Button(Rect(560, 450, 160, 80), buttonFont.render("AGAIN", False, (255, 255, 255)), buttonFont.render("AGAIN", False, (130, 130, 130)), "Restart")
+            elif win:
+                menu = "win"
+                timeText = transform.scale(buttonFont.render("TIME: %d" % currentLevel.timePassed, False, (255, 255, 255)), (200, 100))
                 restartButton = Button(Rect(540, 400, 200, 80), buttonFont.render("NEW LEVEL", False, (255, 255, 255)), buttonFont.render("NEW LEVEL", False, (130, 130, 130)), "Restart")
                 playagainButton = Button(Rect(560, 550, 160, 80), buttonFont.render("AGAIN", False, (255, 255, 255)), buttonFont.render("AGAIN", False, (130, 130, 130)), "Restart")
 
-
         elif menu == "lose":
-            restartButton.update((mouseX, mouseY))
-            playagainButton.update((mouseX, mouseY))
+            restartButton.update(screen, (mouseX, mouseY))
+            playagainButton.update(screen, (mouseX, mouseY))
             if restartButton.clicked((mouseX, mouseY), leftClick):
                 menu = "levelSelect"
             elif playagainButton.clicked((mouseX, mouseY), leftClick):
                 menu = "game"
+                currentLevel = Level(currentLevel.number, background)
+
+        elif menu == "win":
+            screen.blit(timeText, (540, 260))
+            restartButton.update(screen, (mouseX, mouseY))
+            playagainButton.update(screen, (mouseX, mouseY))
+            if restartButton.clicked((mouseX, mouseY), leftClick):
+                menu = "levelSelect"
+            elif playagainButton.clicked((mouseX, mouseY), leftClick):
+                menu = "game"
+                currentLevel = Level(currentLevel.number, background)
+
+        elif menu == "pause":
+            pass
 
 
         display.flip()

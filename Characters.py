@@ -2,6 +2,7 @@ from pygame import *
 from math import *
 from random import *
 from pickle import *
+from Obstacles import *
 
 
 class Player:
@@ -9,13 +10,14 @@ class Player:
         self.xPos = xPos
         self.yPos = yPos
         self.width = 32
-        self.height = 72
+        self.height = 66
         self.xVel = 0
         self.yVel = 0
         self.accel = 3
         self.gravity = 0.129207
         self.jumpVel = 6.448
         self.frame = 0
+        self.lastPortal = 0
         self.onGround = False
         self.dead = False
         self.isRight = True
@@ -53,10 +55,17 @@ class Player:
         self.xPos = self.rect.x
         self.yPos = self.rect.y
 
-    def collideBlock(self, blockList):
+    def collideBlock(self, blockList, bounceList):
+        self.onGround = False
         self.xPos += self.xVel
         self.updateRect()
         for block in blockList:
+            if block.rect.colliderect(self.rect):
+                if self.xVel > 0:
+                    self.rect.right = block.rect.left
+                elif self.xVel < 0:
+                    self.rect.left = block.rect.right
+        for block in bounceList:
             if block.rect.colliderect(self.rect):
                 if self.xVel > 0:
                     self.rect.right = block.rect.left
@@ -81,6 +90,16 @@ class Player:
                 elif self.yVel < 0:
                     self.rect.top = block.rect.bottom
                     self.yVel = 0
+        for block in bounceList:
+            if block.rect.colliderect(self.rect):
+                if self.yVel > 0:
+                    self.onGround = True
+                    self.rect.bottom = block.rect.top
+                    self.yVel *= -1
+                    block.stepped = 0
+                elif self.yVel < 0:
+                    self.rect.top = block.rect.bottom
+                    self.yVel = 0
         self.updatePos()
 
     def collideProjectile(self, projectileList):
@@ -89,7 +108,7 @@ class Player:
                 projectile.dead = True
                 if projectile.getType() == "kill":
                     self.dead = True
-                else:
+                elif projectile.getType() == "slow":
                     self.xVel *= projectile.getSlowAmount()
                     self.yVel *= projectile.getSlowAmount()
 
@@ -99,46 +118,32 @@ class Player:
                 enemy.dead = True
                 self.dead = True
 
-    def collideBounce(self, bounceList):
-        pass
 
     def collideMagma(self, magmaList):
-        pass
+        for magma in magmaList:
+            if magma.rect.colliderect(self.rect):
+                self.dead = True
 
     def getDead(self):
         return self.dead
 
-    def update(self, screen):
-        # if not self.xVel and self.onGround:
-        #     screen.blit(self.imageList[0], self.rect)
-        # elif not self.onGround and self.yVel > 0:
-        #     screen.blit(self.imageList[3], self.rect)
-        # elif not self.onGround:
-        #     if self.xVel < 0:
-        #         screen.blit(self.imageList[2], self.rect)
-        #     else:
-        #         screen.blit(self.imageList[1], self.rect)
-        # elif self.xVel > 0:
-        #     if self.frame < 25:
-        #         screen.blit(self.imageList[1], self.rect)
-        #     elif self.frame < 50:
-        #         screen.blit(self.imageList[0], self.rect)
-        #     elif self.frame < 75:
-        #         screen.blit(self.imageList[2], self.rect)
-        #     elif self.frame < 100:
-        #         screen.blit(self.imageList[0], self.rect)
-        # elif self.xVel < 0:
-        #     if self.frame < 25:
-        #         screen.blit(self.imageListR[1], self.rect)
-        #     elif self.frame < 50:
-        #         screen.blit(self.imageListR[0], self.rect)
-        #     elif self.frame < 75:
-        #         screen.blit(self.imageListR[2], self.rect)
-        #     elif self.frame < 100:
-        #         screen.blit(self.imageListR[0], self.rect)
-        # draw.rect(screen, (255, 100, 100), self.rect)
-        imageList = self.imageListR if self.isRight else self.imageList
+    def collidePortal(self, portalTuple):
+        self.lastPortal += 0.02
+        if self.lastPortal >= 5:
+            self.lastPortal = 5
+            if portalTuple[0] and portalTuple[1]:
+                if self.rect.colliderect(portalTuple[0]):
+                    self.xPos = portalTuple[1][0]
+                    self.yPos = portalTuple[1][1]
+                    self.lastPortal = 0
+                elif self.rect.colliderect(portalTuple[1]):
+                    self.xPos = portalTuple[0][0]
+                    self.yPos = portalTuple[0][1]
+                    self.lastPortal = 0
 
+
+    def update(self, screen):
+        imageList = self.imageListR if self.isRight else self.imageList
         if self.onGround:
             if self.isWalking:
                 if self.frame < 25:
@@ -149,6 +154,7 @@ class Player:
                     screen.blit(imageList[2], self.rect)
                 elif self.frame < 100:
                     screen.blit(imageList[0], self.rect)
+
             else:
                 screen.blit(imageList[0], self.rect)
         elif self.yVel > 0:
@@ -158,7 +164,7 @@ class Player:
 
 
 class Enemy:
-    def __init__(self, startX, startY, endX, endY, vel, imageList, shoots, rate, bulletType, angle):
+    def __init__(self, startX, startY, endX, endY, vel, imageList, shoots, rate, bulletType, slowS, angle):
         self.startX = startX
         self.startY = startY
         self.X = startX
@@ -168,18 +174,31 @@ class Enemy:
         self.vel = vel
         self.imageList = imageList
         self.frame = 0
-        self.angle = atan(endY - startY, endX - startX)
+        self.angles = atan2(endY - startY, endX - startX)
         self.shoots = shoots
         self.rate = rate
-        self.bulletType = bulletType
+        self.cooldown = 0
+        self.bulletType = ["none", "slow", "kill"][bulletType]
+        self.slowS = slowS
         self.angle = angle
         self.dead = False
+        self.rect = Rect(self.X+10, self.Y+10, 20, 20)
 
     def move(self):
-        self.X += self.vel * cos(self.angle)
-        self.Y += self.vel * sin(self.angle)
-        if self.X == self.endX:
+        self.X += self.vel * cos(self.angles)
+        self.Y += -self.vel * sin(self.angles)
+        if (self.X == self.endX and self.Y == self.endY) or (self.X == self.startX and self.Y == self.startY):
             self.vel *= -1
+        self.rect = Rect(self.X+10, self.Y+10, 20, 20)
+
+    def shoot(self):
+        if self.shoots:
+            self.cooldown += 1
+            if self.cooldown == self.rate:
+                self.cooldown = 0
+                return Projectile(5*cos(self.angle), -5*sin(self.angle), self.X + 20, self.Y + 20, 7, self.bulletType, 0)
+        return None
 
     def update(self, screen):
-        screen.blit(self.imageList[(self.frame % 150) // 50], (self.X, self.Y))
+        self.frame += 1
+        screen.blit(self.imageList[(self.frame % 40) // 20], (self.X, self.Y))
