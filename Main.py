@@ -20,6 +20,9 @@ screen = display.set_mode((WIDTH, HEIGHT))
 
 background = image.load("resources/images/background1.png").convert()
 
+mixer.music.load("resources/music/music1.mp3")
+mixer.music.play(-1)
+
 menu = "main"
 mainBackground = transform.scale(image.load("resources/images/menuBack.png"), (1280, 720))
 mainTitle = transform.scale(titleFont.render("PUZZLY CIRCLES", False, (255, 255, 255)), (800, 150))
@@ -106,6 +109,9 @@ while True:
             elif playagainButton.clicked((mouseX, mouseY), leftClick):
                 menu = "game"
                 currentLevel = Level(currentLevel.number, background)
+
+        elif menu == "pause":
+            pass
 
 
         display.flip()
