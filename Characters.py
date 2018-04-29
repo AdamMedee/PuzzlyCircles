@@ -56,7 +56,8 @@ class Player:
         self.yPos = self.rect.y
 
     def collideBlock(self, blockList, bounceList):
-        self.onGround = False
+
+        # self.onGround = False
         self.xPos += self.xVel
         self.updateRect()
         for block in blockList:
@@ -73,10 +74,10 @@ class Player:
                     self.rect.left = block.rect.right
         self.updatePos()
 
-        if not self.onGround:
-            self.yVel += self.gravity
-        else:
-            self.yVel = 0
+        # if not self.onGround:
+        self.yVel += self.gravity
+        # else:
+        #     self.yVel = 0
 
         # self.onGround = False
         self.yPos += self.yVel
@@ -118,7 +119,6 @@ class Player:
                 enemy.dead = True
                 self.dead = True
 
-
     def collideMagma(self, magmaList):
         for magma in magmaList:
             if magma.rect.colliderect(self.rect):
@@ -141,7 +141,6 @@ class Player:
                     self.yPos = portalTuple[0][1]
                     self.lastPortal = 0
 
-
     def update(self, screen):
         imageList = self.imageListR if self.isRight else self.imageList
         if self.onGround:
@@ -157,6 +156,7 @@ class Player:
 
             else:
                 screen.blit(imageList[0], self.rect)
+                self.frame = 50
         elif self.yVel > 0:
             screen.blit(imageList[3], self.rect)
         else:
@@ -182,21 +182,22 @@ class Enemy:
         self.slowS = slowS
         self.angle = angle
         self.dead = False
-        self.rect = Rect(self.X+10, self.Y+10, 20, 20)
+        self.rect = Rect(self.X + 10, self.Y + 10, 20, 20)
 
     def move(self):
         self.X += self.vel * cos(self.angles)
         self.Y += -self.vel * sin(self.angles)
         if (self.X == self.endX and self.Y == self.endY) or (self.X == self.startX and self.Y == self.startY):
             self.vel *= -1
-        self.rect = Rect(self.X+10, self.Y+10, 20, 20)
+        self.rect = Rect(self.X + 10, self.Y + 10, 20, 20)
 
     def shoot(self):
         if self.shoots:
             self.cooldown += 1
             if self.cooldown == self.rate:
                 self.cooldown = 0
-                return Projectile(5*cos(self.angle), -5*sin(self.angle), self.X + 20, self.Y + 20, 7, self.bulletType, 0)
+                return Projectile(5 * cos(self.angle), -5 * sin(self.angle), self.X + 20, self.Y + 20, 7,
+                                  self.bulletType, 0)
         return None
 
     def update(self, screen):
