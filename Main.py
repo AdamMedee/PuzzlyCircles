@@ -83,7 +83,7 @@ while True:
 
         elif menu == "lose":
             restartButton.update((mouseX, mouseY))
-            playagainButton.updae((mouseX, mouseY))
+            playagainButton.update((mouseX, mouseY))
             if restartButton.clicked((mouseX, mouseY), leftClick):
                 menu = "levelSelect"
             elif playagainButton.clicked((mouseX, mouseY), leftClick):

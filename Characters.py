@@ -13,25 +13,30 @@ class Player:
         self.xVel = 0
         self.yVel = 0
         self.accel = 3
-        self.gravity = 1.189207
-        self.jumpVel = 17.448
+        self.gravity = 0.129207
+        self.jumpVel = 6.448
         self.frame = 0
         self.onGround = False
         self.dead = False
+        self.isRight = True
+        self.isWalking = False
         self.rect = Rect(self.xPos, self.yPos, self.width, self.height)
         self.spriteSheet = image.load("resources/images/charSprites.png")
         # 0 is stand, 1 is run1, 2 is run2, 3 is fall
-        self.imageList = [self.spriteSheet.subsurface(Rect(i * 32, 0, 32, 70)) for i in range(4)]
+        self.imageList = [self.spriteSheet.subsurface(Rect(i * 32, 0, 32, 66)) for i in range(4)]
         self.imageListR = [transform.flip(self.imageList[i], True, False) for i in range(4)]
 
     def control(self, keyPresses):
         self.xVel = 0
-        # if self.onGround:
-        if keyPresses[K_a]
+        self.isWalking = False
+        if keyPresses[K_a] != keyPresses[K_d]:
+            self.isWalking = True
             if keyPresses[K_a]:
                 self.xVel = -self.accel
+                self.isRight = True
             if keyPresses[K_d]:
                 self.xVel = self.accel
+                self.isRight = False
         if keyPresses[K_w] and self.onGround:
             self.yVel = -self.jumpVel
             self.onGround = False
@@ -57,6 +62,7 @@ class Player:
                     self.rect.right = block.rect.left
                 elif self.xVel < 0:
                     self.rect.left = block.rect.right
+        self.updatePos()
 
         if not self.onGround:
             self.yVel += self.gravity
@@ -76,7 +82,6 @@ class Player:
                     self.rect.top = block.rect.bottom
                     self.yVel = 0
         self.updatePos()
-        # self.updateRect()
 
     def collideProjectile(self, projectileList):
         for projectile in projectileList:
@@ -104,34 +109,52 @@ class Player:
         return self.dead
 
     def update(self, screen):
-        if not self.xVel and self.onGround:
-            screen.blit(self.imageList[0], self.rect)
-        elif not self.onGround and self.yVel > 0:
-            screen.blit(self.imageList[3], self.rect)
-        elif not self.onGround:
-            if self.xVel < 0:
-                screen.blit(self.imageList[2], self.rect)
-            else:
-                screen.blit(self.imageList[1], self.rect)
-        elif self.xVel > 0:
-            if self.frame < 25:
-                screen.blit(self.imageList[1], self.rect)
-            elif self.frame < 50:
-                screen.blit(self.imageList[0], self.rect)
-            elif self.frame < 75:
-                screen.blit(self.imageList[2], self.rect)
-            elif self.frame < 100:
-                screen.blit(self.imageList[0], self.rect)
-        elif self.xVel < 0:
-            if self.frame < 25:
-                screen.blit(self.imageListR[1], self.rect)
-            elif self.frame < 50:
-                screen.blit(self.imageListR[0], self.rect)
-            elif self.frame < 75:
-                screen.blit(self.imageListR[2], self.rect)
-            elif self.frame < 100:
-                screen.blit(self.imageListR[0], self.rect)
+        # if not self.xVel and self.onGround:
+        #     screen.blit(self.imageList[0], self.rect)
+        # elif not self.onGround and self.yVel > 0:
+        #     screen.blit(self.imageList[3], self.rect)
+        # elif not self.onGround:
+        #     if self.xVel < 0:
+        #         screen.blit(self.imageList[2], self.rect)
+        #     else:
+        #         screen.blit(self.imageList[1], self.rect)
+        # elif self.xVel > 0:
+        #     if self.frame < 25:
+        #         screen.blit(self.imageList[1], self.rect)
+        #     elif self.frame < 50:
+        #         screen.blit(self.imageList[0], self.rect)
+        #     elif self.frame < 75:
+        #         screen.blit(self.imageList[2], self.rect)
+        #     elif self.frame < 100:
+        #         screen.blit(self.imageList[0], self.rect)
+        # elif self.xVel < 0:
+        #     if self.frame < 25:
+        #         screen.blit(self.imageListR[1], self.rect)
+        #     elif self.frame < 50:
+        #         screen.blit(self.imageListR[0], self.rect)
+        #     elif self.frame < 75:
+        #         screen.blit(self.imageListR[2], self.rect)
+        #     elif self.frame < 100:
+        #         screen.blit(self.imageListR[0], self.rect)
         # draw.rect(screen, (255, 100, 100), self.rect)
+        imageList = self.imageListR if self.isRight else self.imageList
+
+        if self.onGround:
+            if self.isWalking:
+                if self.frame < 25:
+                    screen.blit(imageList[1], self.rect)
+                elif self.frame < 50:
+                    screen.blit(imageList[0], self.rect)
+                elif self.frame < 75:
+                    screen.blit(imageList[2], self.rect)
+                elif self.frame < 100:
+                    screen.blit(imageList[0], self.rect)
+            else:
+                screen.blit(imageList[0], self.rect)
+        elif self.yVel > 0:
+            screen.blit(imageList[3], self.rect)
+        else:
+            screen.blit(imageList[2], self.rect)
 
 
 class Enemy:
