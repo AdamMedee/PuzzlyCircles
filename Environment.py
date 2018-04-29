@@ -7,31 +7,36 @@ from Characters import *
 
 init()
 
-blockImg = image.load("resources/images/block.png")
-magmaImgList = [image.load("resources/images/lava.png").subsurface(Rect(i * 40, 0, 40, 40)) for i in range(3)]
+display.set_mode((1, 1), NOFRAME)
+
+blockImg = image.load("resources/images/block.png").convert()
+magmaImgList = [image.load("resources/images/lava.png").subsurface(Rect(i * 40, 0, 40, 40)).convert() for i in range(3)]
 enemyImg = [
-            [image.load("resources/images/groundEnemy.png").subsurface(Rect(i * 40, 0, 40, 40)) for i in range(2)],
-            [image.load("resources/images/flyingEnemy.png").subsurface(Rect(i * 40, 0, 40, 40)) for i in range(2)]
-            ]
-bounceImg = image.load("resources/images/trampoline.png").subsurface(Rect(0, 0, 40, 40))
-bounceImg1  = image.load("resources/images/trampoline.png").subsurface(Rect(40, 0, 40, 40))
+    [image.load("resources/images/groundEnemy.png").subsurface(Rect(i * 40, 0, 40, 40)).convert() for i in range(2)],
+    [image.load("resources/images/flyingEnemy.png").subsurface(Rect(i * 40, 0, 40, 40)).convert() for i in range(2)]
+]
+bounceImg = image.load("resources/images/trampoline.png").subsurface(Rect(0, 0, 40, 40)).convert()
+bounceImg1 = image.load("resources/images/trampoline.png").subsurface(Rect(40, 0, 40, 40)).convert()
 
 levelList = []
 for i in range(12):
     levelList.append([])
-    with open("resources/levels/L%d.txt" % (i+1), "r") as file:
+    with open("resources/levels/L%d.txt" % (i + 1), "r") as file:
         for j in range(18):
             levelList[i].append(file.readline().strip("\n"))
 
 enemyList = []
 for i in range(12):
-    with open("resources/levels/L%dE.txt" % (i+1), "r") as file:
+    with open("resources/levels/L%dE.txt" % (i + 1), "r") as file:
         enemies = int(file.readline().strip("\n"))
         enemyList.append([])
         for j in range(enemies):
-            #startX, startY, endX, endY, vel, imageList, shoots, rate, bulletType, SlowS, angle
+            # startX, startY, endX, endY, vel, imageList, shoots, rate, bulletType, SlowS, angle
             v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11 = file.readline().strip("\n").split(" ")
-            enemyList[i].append(Enemy(int(v1), int(v2), int(v3), int(v4), int(v5), enemyImg[int(v6)], bool(v7), int(v8), int(v9), int(v10), float(v11)))
+            enemyList[i].append(
+                Enemy(int(v1), int(v2), int(v3), int(v4), int(v5), enemyImg[int(v6)], bool(v7), int(v8), int(v9),
+                      int(v10), float(v11)))
+
 
 class Level:
     def __init__(self, number, background):
@@ -51,17 +56,17 @@ class Level:
         for row in range(18):
             for col in range(32):
                 if self.levelCode[row][col] == "B":
-                    self.blockList.append(Block(col*40, row*40, blockImg))
+                    self.blockList.append(Block(col * 40, row * 40, blockImg))
                 elif self.levelCode[row][col] == "M":
-                    self.magmaList.append(Magma(col*40, row*40, magmaImgList))
+                    self.magmaList.append(Magma(col * 40, row * 40, magmaImgList))
                 elif self.levelCode[row][col] == "P":
-                    self.portalList.append(PortalBlock(Rect(col*40, row*40, 40, 40)))
+                    self.portalList.append(PortalBlock(Rect(col * 40, row * 40, 40, 40)))
                 elif self.levelCode[row][col] == "S":
-                    self.player = Player(col*40, row*40)
+                    self.player = Player(col * 40, row * 40)
                 elif self.levelCode[row][col] == "E":
-                    self.endpos = (col*40, row*40)
+                    self.endpos = (col * 40, row * 40)
                 elif self.levelCode[row][col] == "C":
-                    self.bounceList.append(BounceBlock(col*40, row*40, bounceImg, bounceImg1))
+                    self.bounceList.append(BounceBlock(col * 40, row * 40, bounceImg, bounceImg1))
 
     def run(self, keyPresses, mousePresses, mousePos, screen):
         self.timePassed += 0.02
@@ -76,7 +81,7 @@ class Level:
         for projectile in self.projectileList:
             projectile.move()
             projectile.kill(self.blockList, self.bounceList, self.magmaList)
-        for i in range(len(self.projectileList)-1, -1, -1):
+        for i in range(len(self.projectileList) - 1, -1, -1):
             if self.projectileList[i].dead:
                 del self.projectileList[i]
 
@@ -93,7 +98,7 @@ class Level:
             s = 1
         if mousePresses[1]:
             s = 2
-        self.portals.shoot(s, [self.player.xPos+16, self.player.yPos+33], mousePos)
+        self.portals.shoot(s, [self.player.xPos + 16, self.player.yPos + 33], mousePos)
 
     def winAnimation(self, screen):
         if self.player.rect.colliderect(self.endpos[0], self.endpos[1], 40, 80):
@@ -119,4 +124,3 @@ class Level:
             bounce.update(screen)
         self.portals.update(screen)
         return self.player.getDead()
-
