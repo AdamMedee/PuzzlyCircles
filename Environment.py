@@ -8,6 +8,7 @@ from Characters import *
 init()
 
 blockImg = image.load("resources/images/block.png")
+magmaImgList = [image.load("resources/images/lava.png").subsurface(Rect(i * 40, 0, 40, 40)) for i in range(3)]
 
 
 levelList = []
@@ -24,6 +25,7 @@ class Level:
         self.bounceList = []
         self.enemyList = []
         self.projectileList = []
+        self.magmaList = []
         self.score = 0
         self.player = Player(100, 100)
         self.levelCode = levelList[number - 1]
@@ -33,16 +35,14 @@ class Level:
             for col in range(32):
                 if self.levelCode[row][col] == "B":
                     self.blockList.append(Block(col*40, row*40, blockImg))
+                elif self.levelCode[row][col] == "M":
+                    self.magmaList.append(Magma(col*40, row*40, magmaImgList))
 
     def run(self, keyPresses):
         self.timePassed += 0.02
         self.player.control(keyPresses)
         #self.player.move()
         self.player.collideBlock(self.blockList)
-
-
-
-
 
     def update(self, screen):
         screen.blit(self.background, (0, 0))
