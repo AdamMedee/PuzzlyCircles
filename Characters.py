@@ -174,7 +174,7 @@ class Enemy:
         self.vel = vel
         self.imageList = imageList
         self.frame = 0
-        self.angle = atan2(endY - startY, endX - startX)
+        self.angles = atan2(endY - startY, endX - startX)
         self.shoots = shoots
         self.rate = rate
         self.cooldown = 0
@@ -185,9 +185,9 @@ class Enemy:
         self.rect = Rect(self.X+10, self.Y+10, 20, 20)
 
     def move(self):
-        self.X += self.vel * cos(self.angle)
-        self.Y += self.vel * sin(self.angle)
-        if self.X == self.endX or self.X == self.startX:
+        self.X += self.vel * cos(self.angles)
+        self.Y += -self.vel * sin(self.angles)
+        if (self.X == self.endX and self.Y == self.endY) or (self.X == self.startX and self.Y == self.startY):
             self.vel *= -1
         self.rect = Rect(self.X+10, self.Y+10, 20, 20)
 

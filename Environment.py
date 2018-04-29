@@ -29,10 +29,8 @@ for i in range(12):
         enemies = int(file.readline().strip("\n"))
         enemyList.append([])
         for j in range(enemies):
-
             #startX, startY, endX, endY, vel, imageList, shoots, rate, bulletType, SlowS, angle
             v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11 = file.readline().strip("\n").split(" ")
-            print(i, len(enemyList), v6, len(enemyImg))
             enemyList[i].append(Enemy(int(v1), int(v2), int(v3), int(v4), int(v5), enemyImg[int(v6)], bool(v7), int(v8), int(v9), int(v10), float(v11)))
 
 class Level:

@@ -97,8 +97,10 @@ class Portal:
         for portal in portalList:
             if self.portalshot1 and portal.rect.collidepoint(self.portalshot1) and self.portal2 != portal.rect:
                 self.portal1 = portal.rect
+                self.portalshot1 = None
             if self.portalshot2 and portal.rect.collidepoint(self.portalshot2) and self.portal1 != portal.rect:
                 self.portal2 = portal.rect
+                self.portalshot2 = None
 
     def update(self, screen):
         if self.portal1:
