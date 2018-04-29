@@ -44,7 +44,6 @@ mainButtonList = [
 
 levelSelectBackground = transform.scale(image.load("resources/images/levelselectBackground.png"), (1280, 720))
 levelSelectTitle = transform.scale(titleFont.render("LEVEL SELECT", False, (255, 255, 255)), (800, 150))
-storyTitle = transform.scale(titleFont.render("BACKSTORY", False, (255, 255, 255)), (800, 150))
 selectButtonList = [
                        Button(Rect(225 + 250 * (i % 4), 250 + 140 * (i // 4), 100, 100),
                               buttonFont.render("%-2d" % (i + 1), False, (220, 220, 255)),
@@ -105,7 +104,7 @@ while True:
             lose = currentLevel.update(screen)
             win = currentLevel.winAnimation(screen)
             pauseButton = Button(Rect(20, 20, 100, 30), buttonFont.render("PAUSE XD", False, (220, 220, 255)),
-                                 buttonFont.render("PAUSE XD", False, (130, 130, 130)), "pause")
+                                 buttonFont.render("PAUSE", False, (130, 130, 130)), "pause")
             pauseButton.update(screen, (mouseX, mouseY))
             if pauseButton.clicked((mouseX, mouseY), leftClick):
                 menu = "pause"

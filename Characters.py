@@ -17,7 +17,7 @@ class Player:
         self.gravity = 0.129207
         self.jumpVel = 6.448
         self.frame = 0
-        self.lastPortal = 0
+        self.lastPortal = 5
         self.onGround = False
         self.dead = False
         self.isRight = True
