@@ -77,16 +77,29 @@ while True:
         elif menu == "game":
             currentLevel.run(keys, [leftClick, rightClick], [mouseX, mouseY], Rect(0, 0, WIDTH, HEIGHT))
             lose = currentLevel.update(screen)
+            win = currentLevel.winAnimation(screen)
             if lose:
                 menu = "lose"
-                timeText = buttonFont.render("TIME: %d" % currentLevel.timePassed, False, (255, 255, 255))
+                restartButton = Button(Rect(540, 300, 200, 80), buttonFont.render("NEW LEVEL", False, (255, 255, 255)), buttonFont.render("NEW LEVEL", False, (130, 130, 130)), "Restart")
+                playagainButton = Button(Rect(560, 450, 160, 80), buttonFont.render("AGAIN", False, (255, 255, 255)), buttonFont.render("AGAIN", False, (130, 130, 130)), "Restart")
+            elif win:
+                menu = "win"
+                timeText = transform.scale(buttonFont.render("TIME: %d" % currentLevel.timePassed, False, (255, 255, 255)), (200, 100))
                 restartButton = Button(Rect(540, 400, 200, 80), buttonFont.render("NEW LEVEL", False, (255, 255, 255)), buttonFont.render("NEW LEVEL", False, (130, 130, 130)), "Restart")
                 playagainButton = Button(Rect(560, 550, 160, 80), buttonFont.render("AGAIN", False, (255, 255, 255)), buttonFont.render("AGAIN", False, (130, 130, 130)), "Restart")
 
-
         elif menu == "lose":
-            restartButton.update((mouseX, mouseY))
-            playagainButton.update((mouseX, mouseY))
+            restartButton.update(screen, (mouseX, mouseY))
+            playagainButton.update(screen, (mouseX, mouseY))
+            if restartButton.clicked((mouseX, mouseY), leftClick):
+                menu = "levelSelect"
+            elif playagainButton.clicked((mouseX, mouseY), leftClick):
+                menu = "game"
+
+        elif menu == "win":
+            screen.blit(timeText, (540, 260))
+            restartButton.update(screen, (mouseX, mouseY))
+            playagainButton.update(screen, (mouseX, mouseY))
             if restartButton.clicked((mouseX, mouseY), leftClick):
                 menu = "levelSelect"
             elif playagainButton.clicked((mouseX, mouseY), leftClick):

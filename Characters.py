@@ -106,7 +106,7 @@ class Player:
 
     def collideMagma(self, magmaList):
         for magma in magmaList:
-            if magma.colliderect(self.rect):
+            if magma.rect.colliderect(self.rect):
                 self.dead = True
 
     def getDead(self):
@@ -159,18 +159,21 @@ class Enemy:
         self.vel = vel
         self.imageList = imageList
         self.frame = 0
-        self.angle = atan(endY - startY, endX - startX)
+        self.angle = atan2(endY - startY, endX - startX)
         self.shoots = shoots
         self.rate = rate
-        self.bulletType = bulletType
+        self.bulletType = ["none", "slow", "kill"][bulletType]
         self.angle = angle
         self.dead = False
+        self.rect = Rect(self.X, self.Y, 20, 20)
 
     def move(self):
         self.X += self.vel * cos(self.angle)
         self.Y += self.vel * sin(self.angle)
-        if self.X == self.endX:
+        if self.X == self.endX or self.X == self.startX:
             self.vel *= -1
+        self.rect = Rect(self.X, self.Y, 20, 20)
 
     def update(self, screen):
-        screen.blit(self.imageList[(self.frame % 150) // 50], (self.X, self.Y))
+        self.frame += 1
+        screen.blit(self.imageList[(self.frame % 40) // 20], (self.X, self.Y))

@@ -72,14 +72,14 @@ class Portal:
             self.portalshot2[0] += self.shot2velX
             self.portalshot2[1] += self.shot2velY
 
-    def kill(self, blockList, magmaList, bounceList, screen):
+    def kill(self, blockList, magmaList, bounceList, enemyList, screen):
         if self.portalshot1:
-            for b in blockList + magmaList + bounceList:
+            for b in blockList + magmaList + bounceList + enemyList:
                 if b.rect.collidepoint(self.portalshot1):
                     self.portalshot1 = None
                     break
         if self.portalshot2:
-            for b in blockList + magmaList + bounceList:
+            for b in blockList + magmaList + bounceList + enemyList:
                 if b.rect.collidepoint(self.portalshot2):
                     self.portalshot2 = None
                     break
