@@ -95,6 +95,7 @@ while True:
                 menu = "levelSelect"
             elif playagainButton.clicked((mouseX, mouseY), leftClick):
                 menu = "game"
+                currentLevel = Level(currentLevel.number, background)
 
         elif menu == "win":
             screen.blit(timeText, (540, 260))
@@ -104,6 +105,7 @@ while True:
                 menu = "levelSelect"
             elif playagainButton.clicked((mouseX, mouseY), leftClick):
                 menu = "game"
+                currentLevel = Level(currentLevel.number, background)
 
 
         display.flip()

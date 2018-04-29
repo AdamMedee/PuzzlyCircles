@@ -22,12 +22,20 @@ class Magma:
         screen.blit(self.imageList[(self.timer%240)//80], self.rect)
 
 class BounceBlock:
-    def __init__(self, xPos, yPos, image):
+    def __init__(self, xPos, yPos, image, imageP):
         self.rect = Rect(xPos, yPos, 40, 40)
         self.imageList = image
+        self.stepped = 50
+        self.image = image
+        self.imageP = imageP
 
     def update(self, screen):
-        screen.blit(self.image. self.rect)
+        self.stepped += 1
+        if self.stepped < 50:
+            screen.blit(self.imageP, self.rect)
+        else:
+            screen.blit(self.image, self.rect)
+            self.stepped = 50
 
 class PortalBlock:
     def __init__(self, rect):
@@ -119,17 +127,25 @@ class Projectile:
     def move(self):
         self.xPos += self.xVel
         self.yPos += self.yVel
+        self.rect = Rect(self.xPos - self.radius, self.yPos - self.radius, self.radius * 2, self.radius * 2)
+
+    def kill(self, blockList, magmaList, bounceList):
+        for b in blockList + magmaList + bounceList:
+            if b.rect.collidepoint((self.xPos, self.yPos)):
+                self.dead = True
+                break
 
     def getType(self):
-        return self.type()
+        return self.type
 
     def getSlowAmount(self):
         return self.slowAmount
 
     def update(self, screen):
-        if type == "kill":
-            draw.circle(screen, (255, 0, 0), (self.xPos, self.yPos), self.radius, 0)
-        elif type == "slow":
-            draw.circle(screen, (160, 160, 255), (self.xPos, self.yPos), self.radius, 0)
-        draw.circle(screen, (0, 0, 0), (self.xPos, self.yPos), self.radius, 2)
+        if self.type == "kill":
+            draw.circle(screen, (255, 0, 0), (int(self.xPos), int(self.yPos)), self.radius, 0)
+            draw.circle(screen, (0, 0, 0), (int(self.xPos), int(self.yPos)), self.radius, 2)
+        elif self.type == "slow":
+            draw.circle(screen, (160, 160, 255), (int(self.xPos), int(self.yPos)), self.radius, 0)
+            draw.circle(screen, (0, 0, 0), (int(self.xPos), int(self.yPos)), self.radius, 2)
 

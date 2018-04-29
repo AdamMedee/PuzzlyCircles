@@ -2,6 +2,7 @@ from pygame import *
 from math import *
 from random import *
 from pickle import *
+from Obstacles import *
 
 
 class Player:
@@ -54,11 +55,17 @@ class Player:
         self.xPos = self.rect.x
         self.yPos = self.rect.y
 
-    def collideBlock(self, blockList):
+    def collideBlock(self, blockList, bounceList):
         self.onGround = False
         self.xPos += self.xVel
         self.updateRect()
         for block in blockList:
+            if block.rect.colliderect(self.rect):
+                if self.xVel > 0:
+                    self.rect.right = block.rect.left
+                elif self.xVel < 0:
+                    self.rect.left = block.rect.right
+        for block in bounceList:
             if block.rect.colliderect(self.rect):
                 if self.xVel > 0:
                     self.rect.right = block.rect.left
@@ -83,6 +90,16 @@ class Player:
                 elif self.yVel < 0:
                     self.rect.top = block.rect.bottom
                     self.yVel = 0
+        for block in bounceList:
+            if block.rect.colliderect(self.rect):
+                if self.yVel > 0:
+                    self.onGround = True
+                    self.rect.bottom = block.rect.top
+                    self.yVel *= -1
+                    block.stepped = 0
+                elif self.yVel < 0:
+                    self.rect.top = block.rect.bottom
+                    self.yVel = 0
         self.updatePos()
 
     def collideProjectile(self, projectileList):
@@ -91,7 +108,7 @@ class Player:
                 projectile.dead = True
                 if projectile.getType() == "kill":
                     self.dead = True
-                else:
+                elif projectile.getType() == "slow":
                     self.xVel *= projectile.getSlowAmount()
                     self.yVel *= projectile.getSlowAmount()
 
@@ -101,8 +118,6 @@ class Player:
                 enemy.dead = True
                 self.dead = True
 
-    def collideBounce(self, bounceList):
-        pass
 
     def collideMagma(self, magmaList):
         for magma in magmaList:
@@ -149,7 +164,7 @@ class Player:
 
 
 class Enemy:
-    def __init__(self, startX, startY, endX, endY, vel, imageList, shoots, rate, bulletType, angle):
+    def __init__(self, startX, startY, endX, endY, vel, imageList, shoots, rate, bulletType, slowS, angle):
         self.startX = startX
         self.startY = startY
         self.X = startX
@@ -162,17 +177,27 @@ class Enemy:
         self.angle = atan2(endY - startY, endX - startX)
         self.shoots = shoots
         self.rate = rate
+        self.cooldown = 0
         self.bulletType = ["none", "slow", "kill"][bulletType]
+        self.slowS = slowS
         self.angle = angle
         self.dead = False
-        self.rect = Rect(self.X, self.Y, 20, 20)
+        self.rect = Rect(self.X+10, self.Y+10, 20, 20)
 
     def move(self):
         self.X += self.vel * cos(self.angle)
         self.Y += self.vel * sin(self.angle)
         if self.X == self.endX or self.X == self.startX:
             self.vel *= -1
-        self.rect = Rect(self.X, self.Y, 20, 20)
+        self.rect = Rect(self.X+10, self.Y+10, 20, 20)
+
+    def shoot(self):
+        if self.shoots:
+            self.cooldown += 1
+            if self.cooldown == self.rate:
+                self.cooldown = 0
+                return Projectile(5*cos(self.angle), -5*sin(self.angle), self.X + 20, self.Y + 20, 7, self.bulletType, 0)
+        return None
 
     def update(self, screen):
         self.frame += 1
