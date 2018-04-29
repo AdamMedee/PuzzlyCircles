@@ -45,6 +45,7 @@ mainButtonList = [
 
 levelSelectBackground = transform.scale(image.load("resources/images/levelselectBackground.png"), (1280, 720))
 levelSelectTitle = transform.scale(titleFont.render("LEVEL SELECT", False, (255, 255, 255)), (800, 150))
+storyTitle = transform.scale(titleFont.render("BACKSTORY", False, (255, 255, 255)), (800, 150))
 selectButtonList = [
     Button(Rect(225 + 250*(i%4), 250 + 140*(i//4), 100, 100), buttonFont.render("%-2d" % (i+1), False, (255, 255, 255)), buttonFont.render("%-2d" % (i+1), False, (130, 130, 130)), "%d" % (i+1)) for i in range(12)
 ] + [BackButton]
@@ -128,7 +129,8 @@ while True:
 
         elif menu == "story":
             screen.blit(storyBG, (0, 0))
-            BackButton.update(screen)
+            BackButton.update(screen, (mouseX, mouseY))
+            screen.blit(storyTitle, (240, 50))
             if BackButton.clicked((mouseX, mouseY), leftClick):
                 menu = "main"
 
