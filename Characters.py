@@ -25,17 +25,20 @@ class Player:
         self.imageListR = [transform.flip(self.imageList[i], True, False) for i in range(4)]
 
     def control(self, keyPresses):
-        if self.onGround:
+        self.xVel = 0
+        # if self.onGround:
+        if keyPresses[K_a]
             if keyPresses[K_a]:
                 self.xVel = -self.accel
             if keyPresses[K_d]:
                 self.xVel = self.accel
-            if keyPresses[K_w] and self.onGround:
-                self.yVel = -self.jumpVel
-            if self.xVel:
-                self.frame += 1
-                if self.frame > 100:
-                    self.frame = 0
+        if keyPresses[K_w] and self.onGround:
+            self.yVel = -self.jumpVel
+            self.onGround = False
+        if self.xVel:
+            self.frame += 1
+            if self.frame > 100:
+                self.frame = 0
 
     def updateRect(self):
         self.rect.x = int(round(self.xPos) + 0.1)
@@ -54,14 +57,13 @@ class Player:
                     self.rect.right = block.rect.left
                 elif self.xVel < 0:
                     self.rect.left = block.rect.right
-        self.xVel = 0
 
         if not self.onGround:
             self.yVel += self.gravity
         else:
             self.yVel = 0
 
-        self.onGround = False
+        # self.onGround = False
         self.yPos += self.yVel
         self.updateRect()
         for block in blockList:
@@ -74,16 +76,15 @@ class Player:
                     self.rect.top = block.rect.bottom
                     self.yVel = 0
         self.updatePos()
-        self.updateRect()
+        # self.updateRect()
 
     def collideProjectile(self, projectileList):
         for projectile in projectileList:
             if self.rect.colliderect(projectile.rect):
+                projectile.dead = True
                 if projectile.getType() == "kill":
                     self.dead = True
-                    projectile.dead = True
                 else:
-                    projectile.dead = True
                     self.xVel *= projectile.getSlowAmount()
                     self.yVel *= projectile.getSlowAmount()
 
