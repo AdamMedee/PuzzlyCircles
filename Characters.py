@@ -74,12 +74,9 @@ class Player:
                     self.rect.left = block.rect.right
         self.updatePos()
 
-        # if not self.onGround:
         self.yVel += self.gravity
-        # else:
-        #     self.yVel = 0
 
-        # self.onGround = False
+
         self.yPos += self.yVel
         self.updateRect()
         for block in blockList:
