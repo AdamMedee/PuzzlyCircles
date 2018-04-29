@@ -12,9 +12,7 @@ titleFont = font.Font("resources/text/Quantify Bold v2.6.ttf", 150)
 buttonFont = font.Font("resources/text/Quantify Bold v2.6.ttf", 60)
 inGameFont = font.Font("resources/text/Quantify Bold v2.6.ttf", 30)
 
-
-
-#Screen information
+# Screen information
 WIDTH, HEIGHT = 1280, 720
 screen = display.set_mode((WIDTH, HEIGHT))
 
@@ -23,15 +21,16 @@ background = image.load("resources/images/background1.png").convert()
 mixer.music.load("resources/music/music1.mp3")
 mixer.music.play(-1)
 
-storyBG = transform.scale(image.load("resources/images/storylineBG.png") ,(1280, 720))
+storyBG = transform.scale(image.load("resources/images/storylineBG.png"), (1280, 720))
+manualBG = transform.scale(image.load("resources/images/manual.png"), (1280, 820))
 
 menu = "main"
 mainBackground = transform.scale(image.load("resources/images/menuBack.png"), (1280, 720))
 mainTitle = transform.scale(titleFont.render("PUZZLY CIRCLES", False, (220, 220, 255)), (800, 150))
 playButton = buttonFont.render("PLAY", False, (220, 220, 255))
 playButtonP = buttonFont.render("PLAY", False, (130, 130, 130))
-storyButton  = buttonFont.render("STORY", False, (255, 255, 255))
-storyButtonP  = buttonFont.render("STORY", False, (130, 130, 130))
+storyButton = buttonFont.render("STORY", False, (255, 255, 255))
+storyButtonP = buttonFont.render("STORY", False, (130, 130, 130))
 manualButton = buttonFont.render("MANUAL", False, (255, 255, 255))
 manualButtonP = buttonFont.render("MANUAL", False, (130, 130, 130))
 backButton = buttonFont.render("BACK", False, (255, 255, 255))
@@ -46,12 +45,17 @@ mainButtonList = [
 levelSelectBackground = transform.scale(image.load("resources/images/levelselectBackground.png"), (1280, 720))
 levelSelectTitle = transform.scale(titleFont.render("LEVEL SELECT", False, (255, 255, 255)), (800, 150))
 selectButtonList = [
-    Button(Rect(225 + 250*(i%4), 250 + 140*(i//4), 100, 100), buttonFont.render("%-2d" % (i+1), False, (220, 220, 255)), buttonFont.render("%-2d" % (i+1), False, (130, 130, 130)), "%d" % (i+1)) for i in range(12)
-] + [BackButton]
+                       Button(Rect(225 + 250 * (i % 4), 250 + 140 * (i // 4), 100, 100),
+                              buttonFont.render("%-2d" % (i + 1), False, (220, 220, 255)),
+                              buttonFont.render("%-2d" % (i + 1), False, (130, 130, 130)), "%d" % (i + 1)) for i in
+                       range(12)
+                   ] + [BackButton]
 
 winBackground = transform.scale(image.load("resources/images/winBack.png"), (1280, 720))
 
-#Start of the loop
+storyTitle = transform.scale(titleFont.render("BACKSTORY", False, (255, 255, 255)), (800, 150))
+
+# Start of the loop
 while True:
     leftClick = False
     rightClick = False
@@ -106,13 +110,18 @@ while True:
                 menu = "pause"
             if lose:
                 menu = "lose"
-                restartButton = Button(Rect(540, 300, 200, 80), buttonFont.render("NEW LEVEL", False, (220, 220, 255)), buttonFont.render("NEW LEVEL", False, (130, 130, 130)), "Restart")
-                playagainButton = Button(Rect(560, 450, 160, 80), buttonFont.render("AGAIN", False, (220, 220, 255)), buttonFont.render("AGAIN", False, (130, 130, 130)), "Restart")
+                restartButton = Button(Rect(540, 300, 200, 80), buttonFont.render("NEW LEVEL", False, (220, 220, 255)),
+                                       buttonFont.render("NEW LEVEL", False, (130, 130, 130)), "Restart")
+                playagainButton = Button(Rect(560, 450, 160, 80), buttonFont.render("AGAIN", False, (220, 220, 255)),
+                                         buttonFont.render("AGAIN", False, (130, 130, 130)), "Restart")
             elif win:
                 menu = "win"
-                timeText = transform.scale(buttonFont.render("TIME: %d" % currentLevel.timePassed, False, (220, 220, 255)), (230, 100))
-                restartButton = Button(Rect(840, 400, 230, 80), buttonFont.render("NEW LEVEL", False, (220, 220, 255)), buttonFont.render("NEW LEVEL", False, (130, 130, 130)), "Restart")
-                playagainButton = Button(Rect(860, 550, 190, 80), buttonFont.render("AGAIN", False, (220, 220, 255)), buttonFont.render("AGAIN", False, (130, 130, 130)), "Restart")
+                timeText = transform.scale(
+                    buttonFont.render("TIME: %d" % currentLevel.timePassed, False, (220, 220, 255)), (230, 100))
+                restartButton = Button(Rect(840, 400, 230, 80), buttonFont.render("NEW LEVEL", False, (220, 220, 255)),
+                                       buttonFont.render("NEW LEVEL", False, (130, 130, 130)), "Restart")
+                playagainButton = Button(Rect(860, 550, 190, 80), buttonFont.render("AGAIN", False, (220, 220, 255)),
+                                         buttonFont.render("AGAIN", False, (130, 130, 130)), "Restart")
 
 
         elif menu == "lose":
@@ -143,19 +152,22 @@ while True:
                 menu = "main"
 
         elif menu == "manual":
-            pass
+            screen.blit(manualBG, (0, 0))
+            BackButton.update(screen, (mouseX, mouseY))
+            if BackButton.clicked((mouseX, mouseY), leftClick):
+                menu = "main"
 
         elif menu == "pause":
-            resumeButton = Button(Rect(840, 400, 230, 80), buttonFont.render("RESUME", False, (220, 220, 255)), buttonFont.render("RESUME", False, (130, 130, 130)), "game")
-            quitButton = Button(Rect(860, 550, 190, 80), buttonFont.render("QUIT", False, (220, 220, 255)), buttonFont.render("QUIT", False, (130, 130, 130)), "levelSelect")
+            resumeButton = Button(Rect(840, 400, 230, 80), buttonFont.render("RESUME", False, (220, 220, 255)),
+                                  buttonFont.render("RESUME", False, (130, 130, 130)), "game")
+            quitButton = Button(Rect(860, 550, 190, 80), buttonFont.render("QUIT", False, (220, 220, 255)),
+                                buttonFont.render("QUIT", False, (130, 130, 130)), "levelSelect")
             resumeButton.update(screen, (mouseX, mouseY))
             quitButton.update(screen, (mouseX, mouseY))
             if resumeButton.clicked((mouseX, mouseY), leftClick):
                 menu = "game"
             if quitButton.clicked((mouseX, mouseY), leftClick):
                 menu = "levelSelect"
-
-
 
         display.flip()
         continue
