@@ -23,20 +23,31 @@ background = image.load("resources/images/background1.png").convert()
 mixer.music.load("resources/music/music1.mp3")
 mixer.music.play(-1)
 
+storyBG = transform.scale(image.load("resources/images/storylineBG.png") ,(1280, 720))
+
 menu = "main"
 mainBackground = transform.scale(image.load("resources/images/menuBack.png"), (1280, 720))
 mainTitle = transform.scale(titleFont.render("PUZZLY CIRCLES", False, (255, 255, 255)), (800, 150))
 playButton = buttonFont.render("PLAY", False, (255, 255, 255))
 playButtonP = buttonFont.render("PLAY", False, (130, 130, 130))
+storyButton  = buttonFont.render("STORY", False, (255, 255, 255))
+storyButtonP  = buttonFont.render("STORY", False, (130, 130, 130))
+manualButton = buttonFont.render("MANUAL", False, (255, 255, 255))
+manualButtonP = buttonFont.render("MANUAL", False, (130, 130, 130))
+backButton = buttonFont.render("BACK", False, (255, 255, 255))
+backButtonP = buttonFont.render("BACK", False, (130, 130, 130))
+BackButton = Button(Rect(20, 20, 150, 70), backButton, backButtonP, "Back")
 mainButtonList = [
-    Button(Rect(550, 350, 180, 80), playButton, playButtonP, "Play")
+    Button(Rect(550, 270, 180, 80), playButton, playButtonP, "Play"),
+    Button(Rect(540, 400, 200, 80), storyButton, storyButtonP, "Story"),
+    Button(Rect(500, 530, 280, 80), manualButton, manualButtonP, "Manual")
 ]
 
 levelSelectBackground = transform.scale(image.load("resources/images/levelselectBackground.png"), (1280, 720))
 levelSelectTitle = transform.scale(titleFont.render("LEVEL SELECT", False, (255, 255, 255)), (800, 150))
 selectButtonList = [
     Button(Rect(225 + 250*(i%4), 250 + 140*(i//4), 100, 100), buttonFont.render("%-2d" % (i+1), False, (255, 255, 255)), buttonFont.render("%-2d" % (i+1), False, (130, 130, 130)), "%d" % (i+1)) for i in range(12)
-]
+] + [BackButton]
 
 #Start of the loop
 while True:
@@ -55,7 +66,6 @@ while True:
                 rightClick = True
         else:
             leftClick = False
-
     else:
         mouseX, mouseY = mouse.get_pos()
 
@@ -66,7 +76,10 @@ while True:
                 button.update(screen, (mouseX, mouseY))
                 if button.clicked((mouseX, mouseY), leftClick) and button.getName() == "Play":
                     menu = "levelSelect"
-
+                elif button.clicked((mouseX, mouseY), leftClick) and button.getName() == "Story":
+                    menu = "story"
+                elif button.clicked((mouseX, mouseY), leftClick) and button.getName() == "Manual":
+                    menu = "manual"
 
         elif menu == "levelSelect":
             screen.blit(levelSelectBackground, (0, 0))
@@ -74,8 +87,11 @@ while True:
             for button in selectButtonList:
                 button.update(screen, (mouseX, mouseY))
                 if button.clicked((mouseX, mouseY), leftClick):
-                    currentLevel = Level(int(button.name.strip(" ")), background)
-                    menu = "game"
+                    if button.name == "Back":
+                        menu = "main"
+                    else:
+                        currentLevel = Level(int(button.name.strip(" ")), background)
+                        menu = "game"
 
         elif menu == "game":
             currentLevel.run(keys, [leftClick, rightClick], [mouseX, mouseY], Rect(0, 0, WIDTH, HEIGHT))
@@ -109,6 +125,15 @@ while True:
             elif playagainButton.clicked((mouseX, mouseY), leftClick):
                 menu = "game"
                 currentLevel = Level(currentLevel.number, background)
+
+        elif menu == "story":
+            screen.blit(storyBG, (0, 0))
+            BackButton.update(screen)
+            if BackButton.clicked((mouseX, mouseY), leftClick):
+                menu = "main"
+
+        elif menu == "manual":
+            pass
 
         elif menu == "pause":
             pass
