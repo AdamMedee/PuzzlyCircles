@@ -13,9 +13,9 @@ class Player:
         self.height = 66
         self.xVel = 0
         self.yVel = 0
-        self.accel = 3
-        self.gravity = 0.129207
-        self.jumpVel = 6.448
+        self.accel = 4
+        self.gravity = 0.23207
+        self.jumpVel = 8.5
         self.frame = 0
         self.lastPortal = 5
         self.onGround = False
@@ -91,9 +91,9 @@ class Player:
         for block in bounceList:
             if block.rect.colliderect(self.rect):
                 if self.yVel > 0:
-                    self.onGround = True
+                    #self.onGround = True
                     self.rect.bottom = block.rect.top
-                    self.yVel *= -1
+                    self.yVel = min(-self.yVel, -8.5)
                     block.stepped = 0
                 elif self.yVel < 0:
                     self.rect.top = block.rect.bottom
@@ -193,7 +193,7 @@ class Enemy:
             self.cooldown += 1
             if self.cooldown == self.rate:
                 self.cooldown = 0
-                return Projectile(5 * cos(self.angle), -5 * sin(self.angle), self.X + 20, self.Y + 20, 7,
+                return Projectile(3 * cos(self.angle), -3 * sin(self.angle), self.X + 20, self.Y + 20, 7,
                                   self.bulletType, 0)
         return None
 

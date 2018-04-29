@@ -58,7 +58,7 @@ selectButtonList = [
 winBackground = transform.scale(image.load("resources/images/winBack.png"), (1280, 720))
 
 storyTitle = transform.scale(titleFont.render("BACKSTORY", False, (255, 255, 255)), (800, 150))
-
+clock = time.Clock()
 # Start of the loop
 while True:
     leftClick = False
@@ -169,6 +169,7 @@ while True:
             if quitButton.clicked((mouseX, mouseY), leftClick):
                 menu = "levelSelect"
 
+        clock.tick(50)
         display.flip()
         continue
 

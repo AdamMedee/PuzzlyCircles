@@ -12,11 +12,11 @@ display.set_mode((1, 1), NOFRAME)
 blockImg = image.load("resources/images/block.png").convert()
 magmaImgList = [image.load("resources/images/lava.png").subsurface(Rect(i * 40, 0, 40, 40)).convert() for i in range(3)]
 enemyImg = [
-    [image.load("resources/images/groundEnemy.png").subsurface(Rect(i * 40, 0, 40, 40)).convert() for i in range(2)],
-    [image.load("resources/images/flyingEnemy.png").subsurface(Rect(i * 40, 0, 40, 40)).convert() for i in range(2)]
+    [image.load("resources/images/groundEnemy.png").subsurface(Rect(i * 40, 0, 40, 40)) for i in range(2)],
+    [image.load("resources/images/flyingEnemy.png").subsurface(Rect(i * 40, 0, 40, 40)) for i in range(2)]
 ]
-bounceImg = image.load("resources/images/trampoline.png").subsurface(Rect(0, 0, 40, 40)).convert()
-bounceImg1 = image.load("resources/images/trampoline.png").subsurface(Rect(40, 0, 40, 40)).convert()
+bounceImg = image.load("resources/images/trampoline.png").subsurface(Rect(0, 0, 40, 40))
+bounceImg1 = image.load("resources/images/trampoline.png").subsurface(Rect(40, 0, 40, 40))
 
 levelList = []
 for i in range(12):
