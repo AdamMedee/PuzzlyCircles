@@ -41,6 +41,10 @@ mainButtonList = [
     Button(Rect(540, 400, 200, 80), storyButton, storyButtonP, "Story"),
     Button(Rect(500, 530, 280, 80), manualButton, manualButtonP, "Manual")
 ]
+resumeButton = Button(Rect(525, 300, 230, 80), buttonFont.render("RESUME", False, (220, 220, 255)),
+                      buttonFont.render("RESUME", False, (130, 130, 130)), "game")
+quitButton = Button(Rect(545, 420, 190, 80), buttonFont.render("QUIT", False, (220, 220, 255)),
+                    buttonFont.render("QUIT", False, (130, 130, 130)), "levelSelect")
 
 levelSelectBackground = transform.scale(image.load("resources/images/levelselectBackground.png"), (1280, 720))
 levelSelectTitle = transform.scale(titleFont.render("LEVEL SELECT", False, (255, 255, 255)), (800, 150))
@@ -158,10 +162,6 @@ while True:
                 menu = "main"
 
         elif menu == "pause":
-            resumeButton = Button(Rect(840, 400, 230, 80), buttonFont.render("RESUME", False, (220, 220, 255)),
-                                  buttonFont.render("RESUME", False, (130, 130, 130)), "game")
-            quitButton = Button(Rect(860, 550, 190, 80), buttonFont.render("QUIT", False, (220, 220, 255)),
-                                buttonFont.render("QUIT", False, (130, 130, 130)), "levelSelect")
             resumeButton.update(screen, (mouseX, mouseY))
             quitButton.update(screen, (mouseX, mouseY))
             if resumeButton.clicked((mouseX, mouseY), leftClick):
