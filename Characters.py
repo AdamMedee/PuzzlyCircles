@@ -9,13 +9,14 @@ class Player:
         self.xPos = xPos
         self.yPos = yPos
         self.width = 32
-        self.height = 72
+        self.height = 66
         self.xVel = 0
         self.yVel = 0
         self.accel = 3
         self.gravity = 0.129207
         self.jumpVel = 6.448
         self.frame = 0
+        self.lastPortal = 0
         self.onGround = False
         self.dead = False
         self.isRight = True
@@ -54,6 +55,7 @@ class Player:
         self.yPos = self.rect.y
 
     def collideBlock(self, blockList):
+        self.onGround = False
         self.xPos += self.xVel
         self.updateRect()
         for block in blockList:
@@ -103,42 +105,30 @@ class Player:
         pass
 
     def collideMagma(self, magmaList):
-        pass
+        for magma in magmaList:
+            if magma.colliderect(self.rect):
+                self.dead = True
 
     def getDead(self):
         return self.dead
 
-    def update(self, screen):
-        # if not self.xVel and self.onGround:
-        #     screen.blit(self.imageList[0], self.rect)
-        # elif not self.onGround and self.yVel > 0:
-        #     screen.blit(self.imageList[3], self.rect)
-        # elif not self.onGround:
-        #     if self.xVel < 0:
-        #         screen.blit(self.imageList[2], self.rect)
-        #     else:
-        #         screen.blit(self.imageList[1], self.rect)
-        # elif self.xVel > 0:
-        #     if self.frame < 25:
-        #         screen.blit(self.imageList[1], self.rect)
-        #     elif self.frame < 50:
-        #         screen.blit(self.imageList[0], self.rect)
-        #     elif self.frame < 75:
-        #         screen.blit(self.imageList[2], self.rect)
-        #     elif self.frame < 100:
-        #         screen.blit(self.imageList[0], self.rect)
-        # elif self.xVel < 0:
-        #     if self.frame < 25:
-        #         screen.blit(self.imageListR[1], self.rect)
-        #     elif self.frame < 50:
-        #         screen.blit(self.imageListR[0], self.rect)
-        #     elif self.frame < 75:
-        #         screen.blit(self.imageListR[2], self.rect)
-        #     elif self.frame < 100:
-        #         screen.blit(self.imageListR[0], self.rect)
-        # draw.rect(screen, (255, 100, 100), self.rect)
-        imageList = self.imageListR if self.isRight else self.imageList
+    def collidePortal(self, portalTuple):
+        self.lastPortal += 0.02
+        if self.lastPortal >= 5:
+            self.lastPortal = 5
+            if portalTuple[0] and portalTuple[1]:
+                if self.rect.colliderect(portalTuple[0]):
+                    self.xPos = portalTuple[1][0]
+                    self.yPos = portalTuple[1][1]
+                    self.lastPortal = 0
+                elif self.rect.colliderect(portalTuple[1]):
+                    self.xPos = portalTuple[0][0]
+                    self.yPos = portalTuple[0][1]
+                    self.lastPortal = 0
 
+
+    def update(self, screen):
+        imageList = self.imageListR if self.isRight else self.imageList
         if self.onGround:
             if self.isWalking:
                 if self.frame < 25:
@@ -149,6 +139,7 @@ class Player:
                     screen.blit(imageList[2], self.rect)
                 elif self.frame < 100:
                     screen.blit(imageList[0], self.rect)
+
             else:
                 screen.blit(imageList[0], self.rect)
         elif self.yVel > 0:

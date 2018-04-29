@@ -18,7 +18,7 @@ inGameFont = font.Font("resources/text/Quantify Bold v2.6.ttf", 30)
 WIDTH, HEIGHT = 1280, 720
 screen = display.set_mode((WIDTH, HEIGHT))
 
-backgroundList = [image.load("resources/images/background%d.png" % i).convert() for i in range(1, 2)]
+background = image.load("resources/images/background1.png").convert()
 
 menu = "main"
 mainBackground = transform.scale(image.load("resources/images/menuBack.png"), (1280, 720))
@@ -38,6 +38,7 @@ selectButtonList = [
 #Start of the loop
 while True:
     leftClick = False
+    rightClick = False
     keys = key.get_pressed()
     for action in event.get():
         if action.type == QUIT:
@@ -47,6 +48,8 @@ while True:
         if action.type == MOUSEBUTTONDOWN:
             if action.button == 1:
                 leftClick = True
+            if action.button == 3:
+                rightClick = True
         else:
             leftClick = False
 
@@ -68,11 +71,11 @@ while True:
             for button in selectButtonList:
                 button.update(screen, (mouseX, mouseY))
                 if button.clicked((mouseX, mouseY), leftClick):
-                    currentLevel = Level(int(button.name.strip(" ")), backgroundList[int(button.name.strip(" "))-1])
+                    currentLevel = Level(int(button.name.strip(" ")), background)
                     menu = "game"
 
         elif menu == "game":
-            currentLevel.run(keys)
+            currentLevel.run(keys, [leftClick, rightClick], [mouseX, mouseY], Rect(0, 0, WIDTH, HEIGHT))
             lose = currentLevel.update(screen)
             if lose:
                 menu = "lose"
