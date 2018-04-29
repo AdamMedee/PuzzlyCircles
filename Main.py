@@ -64,7 +64,7 @@ while True:
 
         elif menu == "levelSelect":
             screen.blit(levelSelectBackground, (0, 0))
-            screen.blit(levelSelectTitle, (0, 0))
+            screen.blit(levelSelectTitle, (240, 50))
             for button in selectButtonList:
                 button.update(screen, (mouseX, mouseY))
                 if button.clicked((mouseX, mouseY), leftClick):
@@ -73,7 +73,22 @@ while True:
 
         elif menu == "game":
             currentLevel.run(keys)
-            currentLevel.update(screen)
+            lose = currentLevel.update(screen)
+            if lose:
+                menu = "lose"
+                timeText = buttonFont.render("TIME: %d" % currentLevel.timePassed, False, (255, 255, 255))
+                restartButton = Button(Rect(540, 400, 200, 80), buttonFont.render("NEW LEVEL", False, (255, 255, 255)), buttonFont.render("NEW LEVEL", False, (130, 130, 130)), "Restart")
+                playagainButton = Button(Rect(560, 550, 160, 80), buttonFont.render("AGAIN", False, (255, 255, 255)), buttonFont.render("AGAIN", False, (130, 130, 130)), "Restart")
+
+
+        elif menu == "lose":
+            restartButton.update((mouseX, mouseY))
+            playagainButton.updae((mouseX, mouseY))
+            if restartButton.clicked((mouseX, mouseY), leftClick):
+                menu = "levelSelect"
+            elif playagainButton.clicked((mouseX, mouseY), leftClick):
+                menu = "game"
+
 
         display.flip()
         continue

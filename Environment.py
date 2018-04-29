@@ -28,12 +28,14 @@ class Level:
         self.player = Player(100, 100)
         self.levelCode = levelList[number - 1]
         self.background = background
+        self.timePassed = 0
         for row in range(18):
             for col in range(32):
                 if self.levelCode[row][col] == "B":
                     self.blockList.append(Block(col*40, row*40, blockImg))
 
     def run(self, keyPresses):
+        self.timePassed += 0.02
         self.player.control(keyPresses)
         #self.player.move()
         self.player.collideBlock(self.blockList)
@@ -47,4 +49,5 @@ class Level:
         self.player.update(screen)
         for block in self.blockList:
             block.update(screen)
+        return self.player.getDead()
 
